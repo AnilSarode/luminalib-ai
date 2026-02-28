@@ -105,10 +105,109 @@ pip install -r requirements.txt
 
 ---
 
-### 4️⃣ Setup PostgreSQL
+### 4️⃣ Setup PostgreSQL Using Docker
 
-Create database and tables (see SQL schema in project).
+This project uses PostgreSQL as the database.
 
+The easiest way to run PostgreSQL is using Docker.
+
+Your Flask app will run locally (outside Docker).
+Only PostgreSQL will run inside a container.
+
+4.1 Create docker-compose.yml
+
+Create a file named:
+
+docker-compose.yml
+
+at the project root (luminalib/) and add the following content:
+
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: luminalib_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: luminalib
+      POSTGRES_PASSWORD: luminalib
+      POSTGRES_DB: luminalib_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+4.2 Start PostgreSQL
+
+From your project root:
+
+docker-compose up -d
+
+You should see something like:
+
+Creating luminalib_postgres ... done
+4.3 Verify PostgreSQL Is Running
+4.3.1 Check Running Containers
+docker ps
+
+You should see:
+
+luminalib_postgres
+4.3.2 Connect to PostgreSQL (Recommended)
+docker exec -it luminalib_postgres psql -U luminalib -d luminalib_db
+
+If successful, you should see:
+
+luminalib_db=#
+
+To exit:
+
+\q
+4.4 Create Required Tables
+
+After connecting to the database, run the following SQL:
+
+CREATE TABLE books (
+    id UUID PRIMARY KEY,
+    title TEXT,
+    author TEXT,
+    category TEXT,
+    description TEXT,
+    file_path TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    summary TEXT,
+    embedding JSONB
+);
+
+CREATE TABLE borrowings (
+    id SERIAL PRIMARY KEY,
+    book_id UUID REFERENCES books(id),
+    user_id INT,
+    borrowed_at TIMESTAMP,
+    returned_at TIMESTAMP
+);
+
+CREATE TABLE reviews (
+    id SERIAL PRIMARY KEY,
+    book_id UUID REFERENCES books(id),
+    user_id INT,
+    text TEXT,
+    sentiment TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+4.5 Stop PostgreSQL
+
+To stop the container:
+
+docker-compose down
+
+To stop and remove all database data:
+
+docker-compose down -v
 ---
 
 ### 5️⃣ Install Ollama
