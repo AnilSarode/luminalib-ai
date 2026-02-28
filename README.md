@@ -117,11 +117,12 @@ Only PostgreSQL will run inside a container.
 4.1 Create docker-compose.yml
 
 Create a file named:
-
+```
 docker-compose.yml
-
+```
 at the project root (luminalib/) and add the following content:
 
+```
 version: "3.9"
 
 services:
@@ -140,36 +141,46 @@ services:
 
 volumes:
   postgres_data:
+```
 4.2 Start PostgreSQL
 
 From your project root:
 
+````
 docker-compose up -d
 
+````
 You should see something like:
 
 Creating luminalib_postgres ... done
 4.3 Verify PostgreSQL Is Running
 4.3.1 Check Running Containers
+```
 docker ps
-
+```
 You should see:
-
+```
 luminalib_postgres
+```
 4.3.2 Connect to PostgreSQL (Recommended)
-docker exec -it luminalib_postgres psql -U luminalib -d luminalib_db
 
+```
+docker exec -it luminalib_postgres psql -U luminalib -d luminalib_db
+```
 If successful, you should see:
 
+```
 luminalib_db=#
-
+```
 To exit:
-
+```
 \q
+```
 4.4 Create Required Tables
 
 After connecting to the database, run the following SQL:
 
+```
 CREATE TABLE books (
     id UUID PRIMARY KEY,
     title TEXT,
@@ -199,15 +210,19 @@ CREATE TABLE reviews (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+```
 4.5 Stop PostgreSQL
 
 To stop the container:
 
+```
 docker-compose down
-
+```
 To stop and remove all database data:
 
+```
 docker-compose down -v
+```
 ---
 
 ### 5️⃣ Install Ollama
