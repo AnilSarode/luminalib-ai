@@ -152,7 +152,10 @@ docker-compose up -d
 ````
 You should see something like:
 
+```
 Creating luminalib_postgres ... done
+
+```
 4.3 Verify PostgreSQL Is Running
 4.3.1 Check Running Containers
 ```
